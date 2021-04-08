@@ -45,6 +45,14 @@ kubectl wait -n ingress-nginx --for=condition=ready pod --selector=app.kubernete
 
 echo Running Skaffold
 
+# This sets the skaffold to point at gopath
+if [ ! -f "./skaffold.yml" ]; then
+    cp ./skaffold.template.yml ./skaffold.yml
+    GOPATHESCAPE=$(echo "$GOPATH" | sed 's|\\|\\\\|g') 
+    echo $GOPATHESCAPE
+    sed -i "s~{{.GOPATH}}~$GOPATHESCAPE~g" skaffold.yml
+fi
+
 skaffold run
 
 echo Done!

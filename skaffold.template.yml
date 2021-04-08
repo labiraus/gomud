@@ -5,15 +5,15 @@ metadata:
 build:
   artifacts:
   - image: web
-    context: ./apps/web
+    context: {{.GOPATH}}\src\github.com\labiraus\gomud-web
     docker:
       dockerfile: dockerfile
   - image: mud
-    context: ./apps/mud
+    context: {{.GOPATH}}\src\github.com\labiraus\gomud-mud
     docker:
       dockerfile: dockerfile
   - image: user
-    context: ./apps/user
+    context: {{.GOPATH}}\src\github.com\labiraus\gomud-user
     docker:
       dockerfile: dockerfile
 deploy:
