@@ -1,0 +1,138 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gomud
+  "annotations": { linkerd.io/inject: enabled }
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gomud-ingress
+  namespace: gomud
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+      grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /hello
+        pathType: Prefix
+        backend:
+          service:
+            name: service-web
+            port:
+              number: 80
+      - path: /game
+        pathType: Prefix
+        backend:
+          service:
+            name: service-mud
+            port:
+              number: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-web
+  namespace: gomud
+spec:
+  type: ClusterIP
+  selector:
+    app: app-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-mud
+  namespace: gomud
+spec:
+  type: ClusterIP
+  selector:
+    app: app-mud
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-app-web
+  namespace: gomud
+spec:
+  selector:
+    matchLabels:
+      app: app-web
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: app-web
+    spec:
+      containers:
+        - name: web
+          image: web:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-app-mud
+  namespace: gomud
+spec:
+  selector:
+    matchLabels:
+      app: app-mud
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: app-mud
+    spec:
+      containers:
+        - name: mud
+          image: mud:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-app-user
+  namespace: gomud
+spec:
+  selector:
+    matchLabels:
+      app: app-user
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: app-user
+    spec:
+      containers:
+        - name: user
+          image: user:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "200m"

@@ -1,0 +1,22 @@
+apiVersion: skaffold/v2beta12
+kind: Config
+metadata:
+  name: gomud
+build:
+  artifacts:
+  - image: web
+    context: ./apps/web
+    docker:
+      dockerfile: dockerfile
+  - image: mud
+    context: ./apps/mud
+    docker:
+      dockerfile: dockerfile
+  - image: user
+    context: ./apps/user
+    docker:
+      dockerfile: dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - kubernetes/gomud.yml
