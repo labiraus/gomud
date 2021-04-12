@@ -5,18 +5,19 @@ metadata:
 build:
   artifacts:
   - image: web
-    context: {{.GOPATH}}\src\github.com\labiraus\gomud-web
+    context: $GOPATH\src\github.com\labiraus\gomud-web
     docker:
       dockerfile: dockerfile
   - image: mud
-    context: {{.GOPATH}}\src\github.com\labiraus\gomud-mud
+    context: $GOPATH\src\github.com\labiraus\gomud-mud
     docker:
       dockerfile: dockerfile
   - image: user
-    context: {{.GOPATH}}\src\github.com\labiraus\gomud-user
+    context: $GOPATH\src\github.com\labiraus\gomud-user
     docker:
       dockerfile: dockerfile
 deploy:
   kubectl:
     manifests:
     - kubernetes/gomud.yml
+    - kubernetes/database.yml

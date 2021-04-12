@@ -39,6 +39,8 @@ linkerd inject https://raw.githubusercontent.com/kubernetes/ingress-nginx/master
 
 linkerd viz install | kubectl apply -f -
 
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
 echo Waiting for Nginx to finish startup with 5 min timeout
 
 kubectl wait -n ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=300s
@@ -50,9 +52,11 @@ if [ ! -f "./skaffold.yml" ]; then
     cp ./skaffold.template.yml ./skaffold.yml
     GOPATHESCAPE=$(echo "$GOPATH" | sed 's|\\|\\\\|g') 
     echo $GOPATHESCAPE
-    sed -i "s~{{.GOPATH}}~$GOPATHESCAPE~g" skaffold.yml
+    sed -i "s~\$GOPATH~$GOPATHESCAPE~g" skaffold.yml
 fi
 
 skaffold run
+
+helm install gomud-db bitnami/postgresql -n gomud
 
 echo Done!
