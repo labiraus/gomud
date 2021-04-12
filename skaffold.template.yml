@@ -16,6 +16,10 @@ build:
     context: $GOPATH\src\github.com\labiraus\gomud-user
     docker:
       dockerfile: dockerfile
+  - image: postgres-init
+    context: ./postgres
+    docker:
+      dockerfile: dockerfile
 deploy:
   kubectl:
     manifests:

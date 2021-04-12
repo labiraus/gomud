@@ -19,11 +19,11 @@ spec:
   rules:
   - http:
       paths:
-      - path: /hello
+      - path: /api
         pathType: Prefix
         backend:
           service:
-            name: service-web
+            name: service-api
             port:
               number: 80
       - path: /game
@@ -37,12 +37,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-web
+  name: service-api
   namespace: gomud
 spec:
   type: ClusterIP
   selector:
-    app: app-web
+    app: app-api
   ports:
     - protocol: TCP
       port: 80
@@ -65,21 +65,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deployment-app-web
+  name: deployment-app-api
   namespace: gomud
 spec:
   selector:
     matchLabels:
-      app: app-web
+      app: app-api
   replicas: 1
   template:
     metadata:
       labels:
-        app: app-web
+        app: app-api
     spec:
       containers:
-        - name: web
-          image: web:latest
+        - name: api
+          image: api:latest
           ports:
             - containerPort: 8080
           resources:

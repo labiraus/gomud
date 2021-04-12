@@ -1,0 +1,6 @@
+FROM library/postgres
+ENV POSTGRES_USER gomud
+ENV POSTGRES_PASSWORD superStr0ng!Password
+ENV POSTGRES_DB gomud
+
+COPY init.sql /docker-entrypoint-initdb.d
