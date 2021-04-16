@@ -1,4 +1,10 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: gomud
+  "annotations": { linkerd.io/inject: enabled }
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-config
@@ -6,7 +12,7 @@ metadata:
   labels:
     app: db-postgres
 data:
-  POSTGRES_DB: gomud
+  POSTGRES_DB: postgres
   POSTGRES_USER: postgresadmin
   POSTGRES_PASSWORD: admin123
 ---
@@ -57,7 +63,6 @@ spec:
       labels:
         app: db-postgres
     spec:
-      restartPolicy: Always
       containers:
         - name: postgres
           image: postgres-init:latest
@@ -73,6 +78,7 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "200m"
+      dnsPolicy: ClusterFirst
       volumes:
         - name: postgredb
           persistentVolumeClaim:
@@ -82,7 +88,7 @@ apiVersion: v1
 kind: Service
 metadata:
   namespace: gomud
-  name: service-postgres
+  name: service-db-postgres
   labels:
     app: db-postgres
 spec:

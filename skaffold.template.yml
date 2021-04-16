@@ -23,5 +23,5 @@ build:
 deploy:
   kubectl:
     manifests:
-    - kubernetes/gomud.yml
     - kubernetes/database.yml
+    - kubernetes/gomud.yml
