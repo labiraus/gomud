@@ -79,6 +79,7 @@ spec:
               memory: "128Mi"
               cpu: "200m"
       dnsPolicy: ClusterFirst
+      restartPolicy: Always
       volumes:
         - name: postgredb
           persistentVolumeClaim:
