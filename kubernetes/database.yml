@@ -5,6 +5,15 @@ metadata:
   "annotations": { linkerd.io/inject: enabled }
 ---
 apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  namespace: gomud
+type: Opaque
+data:
+  POSTGRES_PASSWORD: YWRtaW4xMjM=
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-config
@@ -12,9 +21,8 @@ metadata:
   labels:
     app: db-postgres
 data:
-  POSTGRES_DB: postgres
-  POSTGRES_USER: postgresadmin
-  POSTGRES_PASSWORD: admin123
+  POSTGRES_DB: gomud
+  POSTGRES_USER: gomud
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -71,6 +79,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: postgres-config
+            - secretRef:
+                name: postgres-secret
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgredb

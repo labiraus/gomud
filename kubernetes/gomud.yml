@@ -7,7 +7,7 @@ metadata:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: gomud-ingress
+  name: ingress-api
   namespace: gomud
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -26,6 +26,35 @@ spec:
             name: service-api
             port:
               number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-websocket
+  namespace: gomud
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+      grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/server-snippets: |
+      location / {
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_http_version 1.1;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Host $host;
+        proxy_set_header Connection "upgrade";
+        proxy_cache_bypass $http_upgrade;
+        }
+spec:
+  rules:
+  - http:
+      paths:
       - path: /game
         pathType: Prefix
         backend:
@@ -57,6 +86,20 @@ spec:
   type: ClusterIP
   selector:
     app: app-mud
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-user
+  namespace: gomud
+spec:
+  type: ClusterIP
+  selector:
+    app: app-user
   ports:
     - protocol: TCP
       port: 8080
@@ -105,6 +148,11 @@ spec:
       containers:
         - name: mud
           image: mud:latest
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+            - secretRef:
+                name: postgres-secret
           ports:
             - containerPort: 8080
           resources:

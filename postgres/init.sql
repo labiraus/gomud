@@ -1,9 +1,3 @@
-CREATE USER gomud PASSWORD 'admin123';
-CREATE DATABASE gomud;
-GRANT ALL PRIVILEGES ON DATABASE gomud TO gomud;
-
-\c gomud;
-
 CREATE TABLE public.connections
 (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY,
@@ -13,6 +7,7 @@ CREATE TABLE public.connections
     two_way boolean NOT NULL DEFAULT TRUE,
     created_at timestamp with time zone NOT NULL DEFAULT NOW(),
     updated_at timestamp with time zone NOT NULL DEFAULT NOW(),
+    deleted_at timestamp with time zone,
     PRIMARY KEY (id)
 );
 
@@ -23,6 +18,7 @@ CREATE TABLE public.rooms
     description character varying NOT NULL,
     created_at timestamp with time zone NOT NULL DEFAULT NOW(),
     updated_at timestamp with time zone NOT NULL DEFAULT NOW(),
+    deleted_at timestamp with time zone,
     PRIMARY KEY (id)
 );
 
@@ -34,6 +30,7 @@ CREATE TABLE public.users
     password_hash character varying NOT NULL,
     created_at timestamp with time zone NOT NULL DEFAULT NOW(),
     updated_at timestamp with time zone NOT NULL DEFAULT NOW(),
+    deleted_at timestamp with time zone,
     PRIMARY KEY (id)
 );
 
