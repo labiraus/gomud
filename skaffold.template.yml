@@ -23,5 +23,8 @@ build:
 deploy:
   kubectl:
     manifests:
-    - kubernetes/database.yml
-    - kubernetes/gomud.yml
+    - kubernetes/namespace.yml
+    - kubernetes/db.yml
+    - kubernetes/app.yml
+    - kubernetes/service.yml
+    - kubernetes/ingress.yml

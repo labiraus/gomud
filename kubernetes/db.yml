@@ -1,10 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: gomud
-  "annotations": { linkerd.io/inject: enabled }
----
-apiVersion: v1
 kind: Secret
 metadata:
   name: postgres-secret
