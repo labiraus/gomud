@@ -41,9 +41,9 @@ linkerd viz install | kubectl apply -f -
 
 skaffold build
 
-echo Waiting for Nginx to finish startup with 5 min timeout
+echo Waiting for Nginx to finish startup with 10 min timeout
 
-kubectl wait -n ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=300s
+kubectl wait -n ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=600s
 
 echo Running Skaffold
 
@@ -56,4 +56,3 @@ if [ ! -f "./skaffold.yml" ]; then
 fi
 
 skaffold run --tail
-

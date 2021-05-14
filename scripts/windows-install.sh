@@ -17,4 +17,15 @@ choco upgrade skaffold
 choco install -y linkerd2
 choco upgrade linkerd2
 
-"C:\Program Files\Docker\Docker\Docker Desktop.exe" &
+choco install -y protoc
+choco upgrade protoc
+
+go get \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
+    google.golang.org/protobuf/cmd/protoc-gen-go \
+    google.golang.org/grpc/cmd/protoc-gen-go-grpc \
+    github.com/mwitkow/go-proto-validators/protoc-gen-govalidators
+
+choco install -y bazel
+choco upgrade bazel
